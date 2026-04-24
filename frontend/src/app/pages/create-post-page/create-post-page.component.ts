@@ -2,9 +2,12 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
+import { ToastrService } from 'ngx-toastr';
+
 import { CategoryService } from '../../services/category.service';
 import { LocationService } from '../../services/location.service';
 import { PostService } from '../../services/post.service';
+
 import { Category } from '../../interfaces/category';
 import { Location } from '../../interfaces/location';
 
@@ -29,11 +32,12 @@ export class CreatePostPageComponent implements OnInit, AfterViewInit {
 
   selectedFile: File | null = null;
 
-  categories: Category[] = [];
-  locations: Location[] = [];
-
+  // 🔥 ДОБАВИЛИ ЭТО (исправляет ошибку)
   successMessage = '';
   errorMessage = '';
+
+  categories: Category[] = [];
+  locations: Location[] = [];
 
   private map!: L.Map;
   private selectedMarker: L.Marker | null = null;
@@ -43,6 +47,7 @@ export class CreatePostPageComponent implements OnInit, AfterViewInit {
     private locationService: LocationService,
     private postService: PostService,
     private router: Router,
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
@@ -78,22 +83,21 @@ export class CreatePostPageComponent implements OnInit, AfterViewInit {
 
       this.selectedMarker = L.marker([lat, lng])
         .addTo(this.map)
-        .bindPopup(`Selected point:<br>Lat: ${this.latitude}<br>Lng: ${this.longitude}`)
+        .bindPopup(`Lat: ${this.latitude}, Lng: ${this.longitude}`)
         .openPopup();
     });
   }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
+
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
+      this.toastr.info('Photo selected 📷');
     }
   }
 
   createPost(): void {
-    this.successMessage = '';
-    this.errorMessage = '';
-
     const formData = new FormData();
     formData.append('title', this.title);
     formData.append('description', this.description);
@@ -118,10 +122,12 @@ export class CreatePostPageComponent implements OnInit, AfterViewInit {
     this.postService.createPost(formData).subscribe({
       next: () => {
         this.successMessage = 'Post created successfully';
+        this.toastr.success('Post created successfully ');
         this.router.navigate(['/posts']);
       },
       error: () => {
         this.errorMessage = 'Failed to create post';
+        this.toastr.error('Failed to create post ');
       },
     });
   }

@@ -59,3 +59,36 @@ button:hover {
 .resolved {
   background: #10b981;
 }
+
+/* TOAST DESIGN */
+
+.toast-container .ngx-toastr {
+  border-radius: 12px;
+  padding: 16px 18px;
+  font-size: 14px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.toast-success {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.toast-error {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.toast-info {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.toast-warning {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.toast-title {
+  font-weight: 600;
+}
+
+.toast-message {
+  opacity: 0.9;
+}
