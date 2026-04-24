@@ -1,50 +1,32 @@
 <div class="container">
 
   @if (loading) {
-    <div class="card detail-card">
-      <p>Loading post details...</p>
-    </div>
+    <p>Loading...</p>
   }
 
   @if (!loading && post) {
+
     <div class="card detail-card">
 
       @if (post.image) {
-        <img [src]="post.image" alt="Item photo" class="detail-image" />
+        <img [src]="post.image" class="detail-image">
       }
 
-      <div class="header">
-        <h2>{{ post.title }}</h2>
+      <h2>{{ post.title }}</h2>
 
-        <div class="badges">
-          <span class="badge {{ post.item_type }}">
-            {{ post.item_type }}
-          </span>
+      <p>{{ post.description }}</p>
 
-          <span class="badge {{ post.status }}">
-            {{ post.status }}
-          </span>
-        </div>
-      </div>
-
-      <p class="description">
-        {{ post.description }}
-      </p>
-
-      <div class="info-grid">
-        <p> <b>{{ post.building_name }}</b> - {{ post.location_name }}</p>
-        <p> {{ post.username }}</p>
-        <p> {{ post.date_event }}</p>
-        <p>📞 {{ post.contact_info }}</p>
-      </div>
-
-      @if (post.latitude != null && post.longitude != null) {
-        <div class="coords">
-           Exact location: {{ post.latitude }}, {{ post.longitude }}
-        </div>
-      }
+      <p><b>Location:</b> {{ post.building_name }} - {{ post.location_name }}</p>
+      <p><b>User:</b> {{ post.username }}</p>
+      <p><b>Date:</b> {{ post.date_event }}</p>
 
       <div class="actions">
+
+        @if (post.status !== 'resolved') {
+          <button class="claim-btn" (click)="claimItem()">
+            Claim this item
+          </button>
+        }
 
         @if (isOwner() && post.status !== 'resolved') {
           <button class="resolve-btn" (click)="markResolved()">
@@ -62,31 +44,22 @@
 
     </div>
 
-    <div class="card comments">
+    <div class="comments">
 
       <h3>Comments</h3>
 
-      @if (authService.isLoggedIn()) {
-        <textarea [(ngModel)]="newComment" placeholder="Write a comment..."></textarea>
-        <button (click)="addComment()">Add Comment</button>
-      }
+      <textarea [(ngModel)]="newComment"></textarea>
+      <button (click)="addComment()">Add Comment</button>
 
       @for (comment of comments; track comment.id) {
-        <div class="comment-card">
-          <p class="comment-user">{{ comment.username }}</p>
+        <div class="comment">
+          <b>{{ comment.username }}</b>
           <p>{{ comment.message }}</p>
         </div>
       }
 
-      @if (!comments.length) {
-        <p class="empty">No comments yet.</p>
-      }
-
     </div>
-  }
 
-  @if (!loading && errorMessage) {
-    <p class="error">{{ errorMessage }}</p>
   }
 
 </div>
